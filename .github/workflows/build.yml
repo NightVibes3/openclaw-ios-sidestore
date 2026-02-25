@@ -16,27 +16,24 @@ jobs:
 
       - name: Setup project
         run: |
+          set -x
           cd apps/ios
-          
-          # Copy local signing example
           cp LocalSigning.xcconfig.example LocalSigning.xcconfig
-          
-          # List files
           ls -la
-          
-          # Generate Xcode project - show all output
-          xcodegen generate 2>&1
+          xcodegen generate
 
       - name: Build for Simulator
+        if: success()
         run: |
           cd apps/ios
           xcodebuild -project OpenClaw.xcodeproj \
             -scheme OpenClaw \
             -configuration Debug \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
-            build 2>&1 | tail -50
+            build
 
       - name: Build for Device (unsigned)
+        if: success()
         run: |
           cd apps/ios
           xcodebuild -project OpenClaw.xcodeproj \
@@ -46,23 +43,19 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            build 2>&1 | tail -100
+            build
 
       - name: Create IPA
+        if: success()
         run: |
           APP=$(find ~/Library/Developer/Xcode/DerivedData -name "OpenClaw.app" -type d | head -1)
-          echo "Found app: $APP"
-          
           mkdir -p Payload/OpenClaw.app
           cp -R "$APP" Payload/OpenClaw.app
-          
           cd Payload
           zip -qr ../OpenClaw.unsigned.ipa *
-          
-          cd ..
-          ls -la OpenClaw.unsigned.ipa
 
       - name: Upload IPA
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: OpenClaw-ipa
