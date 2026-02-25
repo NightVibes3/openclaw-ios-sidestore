@@ -1,0 +1,21 @@
+image: macos-15-xcode-16
+
+stages:
+  - build
+
+build-ios:
+  stage: build
+  script:
+    - cd apps/ios
+    - cp LocalSigning.xcconfig.example LocalSigning.xcconfig
+    - xcodegen generate
+    - xcodebuild -project OpenClaw.xcodeproj -scheme OpenClaw -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16' build
+    - xcodebuild -project OpenClaw.xcodeproj -scheme OpenClaw -configuration Release -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO build
+    - APP=$(find ~/Library/Developer/Xcode/DerivedData -name "OpenClaw.app" -type d | head -1)
+    - mkdir -p Payload/OpenClaw.app
+    - cp -R "$APP" Payload/OpenClaw.app
+    - cd Payload && zip -qr ../OpenClaw.unsigned.ipa *
+  artifacts:
+    paths:
+      - OpenClaw.unsigned.ipa
+    expire_in: 1 week
