@@ -15,20 +15,35 @@ jobs:
         run: brew install xcodegen
 
       - name: Setup project
-        working-directory: ./apps/ios
         run: |
-          # Copy example local signing
+          cd apps/ios
+          
+          # Copy local signing example to make xcodegen happy
           cp LocalSigning.xcconfig.example LocalSigning.xcconfig
           
-          # Generate Xcode project
-          xcodegen generate
+          # Also create Signing.xcconfig if needed
+          if [ ! -f Signing.xcconfig ]; then
+            cat > Signing.xcconfig << 'EOF'
+            OPENCLAW_CODE_SIGN_STYLE = Manual
+            OPENCLAW_DEVELOPMENT_TEAM = 
+            OPENCLAW_APP_BUNDLE_ID = ai.openclaw.ios.sidestore
+            OPENCLAW_APP_PROFILE = 
+            OPENCLAW_SHARE_BUNDLE_ID = ai.openclaw.ios.sidestore.share
+            OPENCLAW_SHARE_PROFILE = 
+            OPENCLAW_WATCH_APP_BUNDLE_ID = ai.openclaw.ios.sidestore.watch
+            OPENCLAW_WATCH_EXTENSION_BUNDLE_ID = ai.openclaw.ios.sidestore.watch.extension
+            EOF
+          fi
           
-          # Verify project was created
-          ls -la *.xcodeproj
+          # Verify required files exist
+          ls -la *.xcconfig
+          
+          # Generate Xcode project with verbose
+          xcodegen generate --use-cache
 
       - name: Build for Simulator
-        working-directory: ./apps/ios
         run: |
+          cd apps/ios
           xcodebuild -project OpenClaw.xcodeproj \
             -scheme OpenClaw \
             -configuration Debug \
@@ -36,8 +51,8 @@ jobs:
             build
 
       - name: Build for Device (unsigned)
-        working-directory: ./apps/ios
         run: |
+          cd apps/ios
           xcodebuild -project OpenClaw.xcodeproj \
             -scheme OpenClaw \
             -configuration Release \
@@ -48,25 +63,22 @@ jobs:
             build
 
       - name: Create IPA
-        working-directory: ./apps/ios
         run: |
           # Find built app
           APP=$(find ~/Library/Developer/Xcode/DerivedData -name "OpenClaw.app" -type d | head -1)
           echo "Found app: $APP"
           
-          # Create Payload folder
           mkdir -p Payload/OpenClaw.app
           cp -R "$APP" Payload/OpenClaw.app
           
-          # Create IPA
           cd Payload
           zip -qr ../OpenClaw.unsigned.ipa *
-          cd ..
           
-          ls -la ../OpenClaw.unsigned.ipa
+          cd ..
+          ls -la OpenClaw.unsigned.ipa
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: OpenClaw-ipa
-          path: apps/ios/OpenClaw.unsigned.ipa
+          path: OpenClaw.unsigned.ipa
