@@ -2,8 +2,9 @@ name: OpenClaw
 options:
   bundleIdPrefix: ai.openclaw
   deploymentTarget:
-    iOS: "18.0"
-  xcodeVersion: "16.0"
+    iOS: "17.0"
+  xcodeVersion: "15.0"
+  developmentLanguage: en
   generateEmptyDirectories: true
 
 settings:
