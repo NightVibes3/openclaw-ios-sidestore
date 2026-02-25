@@ -11,19 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
       - name: Setup project
         run: |
-          set -x
           cd apps/ios
           cp LocalSigning.xcconfig.example LocalSigning.xcconfig
-          ls -la
           xcodegen generate
 
       - name: Build for Simulator
-        if: success()
         run: |
           cd apps/ios
           xcodebuild -project OpenClaw.xcodeproj \
@@ -33,7 +33,6 @@ jobs:
             build
 
       - name: Build for Device (unsigned)
-        if: success()
         run: |
           cd apps/ios
           xcodebuild -project OpenClaw.xcodeproj \
@@ -46,7 +45,6 @@ jobs:
             build
 
       - name: Create IPA
-        if: success()
         run: |
           APP=$(find ~/Library/Developer/Xcode/DerivedData -name "OpenClaw.app" -type d | head -1)
           mkdir -p Payload/OpenClaw.app
@@ -55,7 +53,6 @@ jobs:
           zip -qr ../OpenClaw.unsigned.ipa *
 
       - name: Upload IPA
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: OpenClaw-ipa
