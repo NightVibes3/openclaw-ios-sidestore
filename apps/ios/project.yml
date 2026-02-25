@@ -47,15 +47,14 @@ targets:
       - sdk: AppIntents.framework
     settings:
       base:
-        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_IDENTITY: ""
         CODE_SIGN_ENTITLEMENTS: Sources/OpenClaw.entitlements
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_APP_BUNDLE_ID)"
-        PROVISIONING_PROFILE_SPECIFIER: "$(OPENCLAW_APP_PROFILE)"
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: ""
+        PRODUCT_BUNDLE_IDENTIFIER: ai.openclaw.ios.sidestore
+        PROVISIONING_PROFILE_SPECIFIER: ""
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
-        ENABLE_APPINTENTS_METADATA: NO
     info:
       path: Sources/Info.plist
       properties:
@@ -108,11 +107,11 @@ targets:
       - package: OpenClawKit
     settings:
       base:
-        CODE_SIGN_IDENTITY: "Apple Development"
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_SHARE_BUNDLE_ID)"
-        PROVISIONING_PROFILE_SPECIFIER: "$(OPENCLAW_SHARE_PROFILE)"
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: ""
+        PRODUCT_BUNDLE_IDENTIFIER: ai.openclaw.ios.sidestore.share
+        PROVISIONING_PROFILE_SPECIFIER: ""
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
     info:
