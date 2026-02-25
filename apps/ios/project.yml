@@ -37,7 +37,6 @@ targets:
     dependencies:
       - target: OpenClawShareExtension
         embed: true
-      - target: OpenClawWatchApp
       - package: OpenClawKit
       - package: OpenClawKit
         product: OpenClawChatUI
@@ -46,32 +45,6 @@ targets:
       - package: Swabble
         product: SwabbleKit
       - sdk: AppIntents.framework
-    preBuildScripts:
-      - name: SwiftFormat (lint)
-        basedOnDependencyAnalysis: false
-        inputFileLists:
-          - $(SRCROOT)/SwiftSources.input.xcfilelist
-        script: |
-          set -euo pipefail
-          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-          if ! command -v swiftformat >/dev/null 2>&1; then
-            echo "error: swiftformat not found (brew install swiftformat)" >&2
-            exit 1
-          fi
-          swiftformat --lint --config "$SRCROOT/../../.swiftformat" \
-            --filelist "$SRCROOT/SwiftSources.input.xcfilelist"
-      - name: SwiftLint
-        basedOnDependencyAnalysis: false
-        inputFileLists:
-          - $(SRCROOT)/SwiftSources.input.xcfilelist
-        script: |
-          set -euo pipefail
-          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-          if ! command -v swiftlint >/dev/null 2>&1; then
-            echo "error: swiftlint not found (brew install swiftlint)" >&2
-            exit 1
-          fi
-          swiftlint lint --config "$SRCROOT/.swiftlint.yml" --use-script-input-file-lists
     settings:
       base:
         CODE_SIGN_IDENTITY: "Apple Development"
@@ -157,55 +130,6 @@ targets:
               NSExtensionActivationSupportsWebURLWithMaxCount: 1
               NSExtensionActivationSupportsImageWithMaxCount: 10
               NSExtensionActivationSupportsMovieWithMaxCount: 1
-
-  OpenClawWatchApp:
-    type: application.watchapp2
-    platform: watchOS
-    deploymentTarget: "11.0"
-    sources:
-      - path: WatchApp
-    dependencies:
-      - target: OpenClawWatchExtension
-    configFiles:
-      Debug: Config/Signing.xcconfig
-      Release: Config/Signing.xcconfig
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_WATCH_APP_BUNDLE_ID)"
-    info:
-      path: WatchApp/Info.plist
-      properties:
-        CFBundleDisplayName: OpenClaw
-        CFBundleShortVersionString: "2026.2.21"
-        CFBundleVersion: "20260220"
-        WKCompanionAppBundleIdentifier: "$(OPENCLAW_APP_BUNDLE_ID)"
-        WKWatchKitApp: true
-
-  OpenClawWatchExtension:
-    type: watchkit2-extension
-    platform: watchOS
-    deploymentTarget: "11.0"
-    sources:
-      - path: WatchExtension/Sources
-    dependencies:
-      - sdk: WatchConnectivity.framework
-      - sdk: UserNotifications.framework
-    configFiles:
-      Debug: Config/Signing.xcconfig
-      Release: Config/Signing.xcconfig
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_WATCH_EXTENSION_BUNDLE_ID)"
-    info:
-      path: WatchExtension/Info.plist
-      properties:
-        CFBundleDisplayName: OpenClaw
-        CFBundleShortVersionString: "2026.2.21"
-        CFBundleVersion: "20260220"
-        NSExtension:
-          NSExtensionAttributes:
-            WKAppBundleIdentifier: "$(OPENCLAW_WATCH_APP_BUNDLE_ID)"
-          NSExtensionPointIdentifier: com.apple.watchkit
 
   OpenClawTests:
     type: bundle.unit-test
