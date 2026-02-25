@@ -11,11 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+      - name: Show Xcode
+        run: |
+          ls /Applications/
+          xcode-select -p
+          xcodebuild -version
 
       - name: Install XcodeGen
-        run: brew install xcodegen
+        run: |
+          # Download xcodegen binary directly (no brew needed)
+          curl -sL https://github.com/yonaskolb/XcodeGen/releases/download/v0.54.1/xcodegen-0.54.1-macos.tar.gz | tar xz
+          mv xcodegen-0.54.1-macos/xcodegen /usr/local/bin/
 
       - name: Setup project
         run: |
