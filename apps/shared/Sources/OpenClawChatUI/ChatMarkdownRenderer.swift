@@ -1,5 +1,5 @@
 import SwiftUI
-import Textual
+// import Textual
 
 public enum ChatMarkdownVariant: String, CaseIterable, Sendable {
     case standard
