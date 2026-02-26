@@ -1,3 +1,5 @@
+import Foundation
+
 // Stub for ElevenLabsKit - functionality available when ElevenLabsKit is added back
 
 public struct ElevenLabsVoice: Codable, Sendable {

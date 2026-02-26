@@ -11,6 +11,3 @@ public protocol PCMStreamingAudioPlaying {
     func play(stream: AsyncThrowingStream<Data, Error>, sampleRate: Double) async -> StreamingPlaybackResult
     func stop() -> Double?
 }
-
-extension StreamingAudioPlayer: StreamingAudioPlaying {}
-extension PCMStreamingAudioPlayer: PCMStreamingAudioPlaying {}
