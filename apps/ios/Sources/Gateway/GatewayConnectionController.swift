@@ -886,7 +886,11 @@ final class GatewayConnectionController {
         let photoStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         permissions["photos"] = photoStatus == .authorized || photoStatus == .limited
         let contactsStatus = CNContactStore.authorizationStatus(for: .contacts)
-        permissions["contacts"] = contactsStatus == .authorized || contactsStatus == .limited
+        if #available(iOS 18.0, *) {
+            permissions["contacts"] = contactsStatus == .authorized || contactsStatus == .limited
+        } else {
+            permissions["contacts"] = contactsStatus == .authorized
+        }
 
         let calendarStatus = EKEventStore.authorizationStatus(for: .event)
         permissions["calendar"] =
@@ -1024,7 +1028,7 @@ extension GatewayConnectionController {
 }
 #endif
 
-private final class GatewayTLSFingerprintProbe: NSObject, @unchecked Sendable, URLSessionDelegate {
+@MainActor private final class GatewayTLSFingerprintProbe: NSObject, URLSessionDelegate {
     private let url: URL
     private let timeoutSeconds: Double
     private let onComplete: @Sendable (String?) -> Void
