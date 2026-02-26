@@ -5,24 +5,19 @@ import PackageDescription
 let package = Package(
     name: "OpenClawKit",
     platforms: [
-        .iOS(.v18),
-        .macOS(.v15),
+        .iOS(.v17),
+        .macOS(.v14),
     ],
     products: [
         .library(name: "OpenClawProtocol", targets: ["OpenClawProtocol"]),
         .library(name: "OpenClawKit", targets: ["OpenClawKit"]),
         .library(name: "OpenClawChatUI", targets: ["OpenClawChatUI"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/gonzalezreal/textual", exact: "0.3.1"),
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "OpenClawProtocol",
-            path: "Sources/OpenClawProtocol",
-            swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
-            ]),
+            path: "Sources/OpenClawProtocol"),
         .target(
             name: "OpenClawKit",
             dependencies: [
@@ -31,29 +26,15 @@ let package = Package(
             path: "Sources/OpenClawKit",
             resources: [
                 .process("Resources"),
-            ],
-            swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]),
         .target(
             name: "OpenClawChatUI",
             dependencies: [
                 "OpenClawKit",
-                .product(
-                    name: "Textual",
-                    package: "textual",
-                    condition: .when(platforms: [.macOS, .iOS])),
             ],
-            path: "Sources/OpenClawChatUI",
-            swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
-            ]),
+            path: "Sources/OpenClawChatUI"),
         .testTarget(
             name: "OpenClawKitTests",
             dependencies: ["OpenClawKit", "OpenClawChatUI"],
-            path: "Tests/OpenClawKitTests",
-            swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
-                .enableExperimentalFeature("SwiftTesting"),
-            ]),
+            path: "Tests/OpenClawKitTests"),
     ])

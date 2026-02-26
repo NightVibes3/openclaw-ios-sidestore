@@ -4,8 +4,8 @@ import PackageDescription
 let package = Package(
     name: "swabble",
     platforms: [
-        .macOS(.v15),
-        .iOS(.v18),
+        .macOS(.v14),
+        .iOS(.v17),
     ],
     products: [
         .library(name: "Swabble", targets: ["Swabble"]),
@@ -19,14 +19,10 @@ let package = Package(
     targets: [
         .target(
             name: "Swabble",
-            path: "Sources/SwabbleCore",
-            swiftSettings: []),
+            path: "Sources/SwabbleCore"),
         .target(
             name: "SwabbleKit",
-            path: "Sources/SwabbleKit",
-            swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
-            ]),
+            path: "Sources/SwabbleKit"),
         .executableTarget(
             name: "SwabbleCLI",
             dependencies: [
@@ -40,10 +36,6 @@ let package = Package(
             dependencies: [
                 "SwabbleKit",
                 .product(name: "Testing", package: "swift-testing"),
-            ],
-            swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
-                .enableExperimentalFeature("SwiftTesting"),
             ]),
         .testTarget(
             name: "swabbleTests",
