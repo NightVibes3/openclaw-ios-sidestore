@@ -3,7 +3,7 @@ import Foundation
 import Observation
 import OpenClawKit
 import Speech
-import SwabbleKit
+
 
 private func makeAudioTapEnqueueCallback(queue: AudioBufferQueue) -> @Sendable (AVAudioPCMBuffer, AVAudioTime) -> Void {
     { buffer, _ in
@@ -113,7 +113,7 @@ final class VoiceWakeManager: NSObject {
             })
     }
 
-    deinit {
+    @MainActor deinit {
         if let userDefaultsObserver = self.userDefaultsObserver {
             NotificationCenter.default.removeObserver(userDefaultsObserver)
         }
@@ -373,8 +373,8 @@ final class VoiceWakeManager: NSObject {
         triggers: [String],
         minPostTriggerGap: TimeInterval = 0.45) -> String?
     {
-        let config = WakeWordGateConfig(triggers: triggers, minPostTriggerGap: minPostTriggerGap)
-        return WakeWordGate.match(transcript: transcript, segments: segments, config: config)?.command
+        // let config = WakeWordGateConfig(triggers: triggers, minPostTriggerGap: minPostTriggerGap)
+        return nil // WakeWordGate.match(transcript: transcript, segments: segments, config: config)?.command
     }
 
     private static func configureAudioSession() throws {
