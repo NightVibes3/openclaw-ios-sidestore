@@ -24,7 +24,7 @@ final class DeviceStatusService: DeviceStatusServicing {
             uptimeSeconds: uptime)
     }
 
-    func info() -> OpenClawDeviceInfoPayload {
+    @MainActor func info() -> OpenClawDeviceInfoPayload {
         let device = UIDevice.current
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "dev"
         let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
@@ -39,7 +39,7 @@ final class DeviceStatusService: DeviceStatusServicing {
             locale: locale)
     }
 
-    private func batteryStatus() -> OpenClawBatteryStatusPayload {
+    @MainActor private func batteryStatus() -> OpenClawBatteryStatusPayload {
         let device = UIDevice.current
         device.isBatteryMonitoringEnabled = true
         let level = device.batteryLevel >= 0 ? Double(device.batteryLevel) : nil
