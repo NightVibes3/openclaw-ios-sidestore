@@ -14,8 +14,6 @@ settings:
 packages:
   OpenClawKit:
     path: ../shared
-  Swabble:
-    path: ../../Swabble
 
 schemes:
   OpenClaw:
@@ -44,8 +42,6 @@ targets:
         product: OpenClawChatUI
       - package: OpenClawKit
         product: OpenClawProtocol
-      - package: Swabble
-        product: SwabbleKit
       - sdk: AppIntents.framework
     settings:
       base:
@@ -129,6 +125,7 @@ targets:
             NSExtensionActivationRule:
               NSExtensionActivationSupportsText: true
               NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
               NSExtensionActivationSupportsImageWithMaxCount: 10
               NSExtensionActivationSupportsMovieWithMaxCount: 1
 
@@ -139,8 +136,6 @@ targets:
       - path: Tests
     dependencies:
       - target: OpenClaw
-      - package: Swabble
-        product: SwabbleKit
       - sdk: AppIntents.framework
     settings:
       base:
