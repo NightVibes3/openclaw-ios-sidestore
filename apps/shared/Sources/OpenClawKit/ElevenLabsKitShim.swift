@@ -66,18 +66,7 @@ public struct StreamingPlaybackResult: Sendable {
     }
 }
 
-@MainActor
-public protocol StreamingAudioPlaying: Sendable {
-    func play(stream: AsyncThrowingStream<Data, Error>) async -> StreamingPlaybackResult
-    func stop() -> Double?
-}
-
-@MainActor
-public protocol PCMStreamingAudioPlaying: Sendable {
-    func play(stream: AsyncThrowingStream<Data, Error>, sampleRate: Double) async -> StreamingPlaybackResult
-    func stop() -> Double?
-}
-
+// Concrete implementations using protocols defined in AudioStreamingProtocols.swift
 public class StreamingAudioPlayer: StreamingAudioPlaying, @unchecked Sendable {
     public static let shared = StreamingAudioPlayer()
     public init() {}
