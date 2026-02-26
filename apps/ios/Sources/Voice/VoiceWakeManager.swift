@@ -113,7 +113,7 @@ final class VoiceWakeManager: NSObject {
             })
     }
 
-    @MainActor deinit {
+    deinit {
         if let userDefaultsObserver = self.userDefaultsObserver {
             NotificationCenter.default.removeObserver(userDefaultsObserver)
         }
