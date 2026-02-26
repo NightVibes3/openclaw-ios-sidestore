@@ -57,12 +57,15 @@ public class ElevenLabsTTSClient: @unchecked Sendable {
     }
 }
 
-public protocol StreamingAudioPlayer: AnyObject, Sendable {
-    func play(data: Data) async throws
-    func stop() async
+public class StreamingAudioPlayer: @unchecked Sendable {
+    public static let shared = StreamingAudioPlayer()
+    public init() {}
+    public func play(data: Data) async throws {}
+    public func stop() async {}
 }
 
-public class PCMStreamingAudioPlayer: StreamingAudioPlayer, @unchecked Sendable {
+public class PCMStreamingAudioPlayer: @unchecked Sendable {
+    public static let shared = PCMStreamingAudioPlayer()
     public init() {}
     public func play(data: Data) async throws {}
     public func stop() async {}
