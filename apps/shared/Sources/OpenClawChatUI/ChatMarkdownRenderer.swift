@@ -1,5 +1,4 @@
 import SwiftUI
-// import Textual
 
 public enum ChatMarkdownVariant: String, CaseIterable, Sendable {
     case standard
@@ -36,31 +35,16 @@ public struct ChatMarkdownRenderer: View {
     public var body: some View {
         let processed = ChatMarkdownPreprocessor.preprocess(markdown: self.text)
         VStack(alignment: .leading, spacing: 10) {
-            StructuredText(markdown: processed.cleaned)
-                .modifier(ChatMarkdownStyle(
-                    variant: self.variant,
-                    context: self.context,
-                    font: self.font,
-                    textColor: self.textColor))
+            // Using native SwiftUI Text with LocalizedStringKey for Markdown support
+            Text(LocalizedStringKey(processed.cleaned))
+                .font(self.font)
+                .foregroundStyle(self.textColor)
+                .textSelection(.enabled)
 
             if !processed.images.isEmpty {
                 InlineImageList(images: processed.images)
             }
         }
-    }
-}
-
-private struct ChatMarkdownStyle: ViewModifier {
-    let variant: ChatMarkdownVariant
-    let context: ChatMarkdownRenderer.Context
-    let font: Font
-    let textColor: Color
-
-    func body(content: Content) -> some View {
-        content
-            .font(self.font)
-            .foregroundStyle(self.textColor)
-            .textSelection(.enabled)
     }
 }
 
