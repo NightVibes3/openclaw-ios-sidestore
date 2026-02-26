@@ -1027,12 +1027,12 @@ extension GatewayConnectionController {
 private final class GatewayTLSFingerprintProbe: NSObject, URLSessionDelegate {
     private let url: URL
     private let timeoutSeconds: Double
-    private let onComplete: (String?) -> Void
+    private let onComplete: @Sendable (String?) -> Void
     private var didFinish = false
     private var session: URLSession?
     private var task: URLSessionWebSocketTask?
 
-    init(url: URL, timeoutSeconds: Double, onComplete: @escaping (String?) -> Void) {
+    init(url: URL, timeoutSeconds: Double, onComplete: @escaping @Sendable (String?) -> Void) {
         self.url = url
         self.timeoutSeconds = timeoutSeconds
         self.onComplete = onComplete
