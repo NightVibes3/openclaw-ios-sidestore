@@ -493,3 +493,9 @@ extension VoiceWakeManager {
     }
 }
 #endif
+
+// Swabble Replacement Stubs
+public struct WakeWordSegment: Sendable {
+    public let text: String
+    public let timestamp: TimeInterval
+}
