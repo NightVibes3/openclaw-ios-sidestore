@@ -57,21 +57,41 @@ public class ElevenLabsTTSClient: @unchecked Sendable {
     }
 }
 
-public class StreamingAudioPlayer: @unchecked Sendable {
-    public static let shared = StreamingAudioPlayer()
-    public init() {}
-    public func play(data: Data) async throws {}
-    public func stop() async {}
-}
-
-public class PCMStreamingAudioPlayer: @unchecked Sendable {
-    public static let shared = PCMStreamingAudioPlayer()
-    public init() {}
-    public func play(data: Data) async throws {}
-    public func stop() async {}
-}
-
 public struct StreamingPlaybackResult: Sendable {
     public let success: Bool
     public let bytesPlayed: Int
+    public init(success: Bool, bytesPlayed: Int) {
+        self.success = success
+        self.bytesPlayed = bytesPlayed
+    }
+}
+
+@MainActor
+public protocol StreamingAudioPlaying: Sendable {
+    func play(stream: AsyncThrowingStream<Data, Error>) async -> StreamingPlaybackResult
+    func stop() -> Double?
+}
+
+@MainActor
+public protocol PCMStreamingAudioPlaying: Sendable {
+    func play(stream: AsyncThrowingStream<Data, Error>, sampleRate: Double) async -> StreamingPlaybackResult
+    func stop() -> Double?
+}
+
+public class StreamingAudioPlayer: StreamingAudioPlaying, @unchecked Sendable {
+    public static let shared = StreamingAudioPlayer()
+    public init() {}
+    public func play(stream: AsyncThrowingStream<Data, Error>) async -> StreamingPlaybackResult {
+        return StreamingPlaybackResult(success: true, bytesPlayed: 0)
+    }
+    public func stop() -> Double? { return nil }
+}
+
+public class PCMStreamingAudioPlayer: PCMStreamingAudioPlaying, @unchecked Sendable {
+    public static let shared = PCMStreamingAudioPlayer()
+    public init() {}
+    public func play(stream: AsyncThrowingStream<Data, Error>, sampleRate: Double) async -> StreamingPlaybackResult {
+        return StreamingPlaybackResult(success: true, bytesPlayed: 0)
+    }
+    public func stop() -> Double? { return nil }
 }
