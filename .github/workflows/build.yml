@@ -7,17 +7,14 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Swift 6.2
+      - name: Setup Xcode
         run: |
-          # Download and install Swift 6.2
-          curl -sL https://download.swift.org/swift-6.2-release/macos/swift-6.2-RELEASE/swift-6.2-RELEASE-osx-arm64.xip -o swift.xip
-          xip --expand swift.xip
-          sudo mv swift-6.2-RELEASE-osx-arm64 /Library/Developer/Toolchains/swift-6.2-RELEASE.xctoolchain
-          sudo xcode-select -s /Library/Developer/Toolchains/swift-6.2-RELEASE.xctoolchain
+          sudo xcode-select -s /Applications/Xcode_16.2.app
+          xcodebuild -version
           swift --version
 
       - name: Setup XcodeGen
@@ -36,7 +33,6 @@ jobs:
             -scheme OpenClaw \
             -configuration Debug \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
-            SWIFT_EXEC=/Library/Developer/Toolchains/swift-6.2-RELEASE.xctoolchain/usr/bin/swiftc \
             build
 
       - name: Build for Device (unsigned)
@@ -49,7 +45,6 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            SWIFT_EXEC=/Library/Developer/Toolchains/swift-6.2-RELEASE.xctoolchain/usr/bin/swiftc \
             build
 
       - name: Create IPA
