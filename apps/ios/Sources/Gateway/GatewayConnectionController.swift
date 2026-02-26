@@ -1028,7 +1028,7 @@ extension GatewayConnectionController {
 }
 #endif
 
-private final class GatewayTLSFingerprintProbe: NSObject, URLSessionDelegate {
+private final class GatewayTLSFingerprintProbe: NSObject, URLSessionDelegate, @unchecked Sendable {
     private let url: URL
     private let timeoutSeconds: Double
     private let onComplete: @Sendable (String?) -> Void
