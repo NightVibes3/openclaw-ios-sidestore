@@ -10,7 +10,7 @@ final class DeviceStatusService: DeviceStatusServicing {
     }
 
     func status() async throws -> OpenClawDeviceStatusPayload {
-        let battery = self.batteryStatus()
+        let battery = await self.batteryStatus()
         let thermal = self.thermalStatus()
         let storage = self.storageStatus()
         let network = await self.networkStatus.currentStatus()
@@ -24,8 +24,8 @@ final class DeviceStatusService: DeviceStatusServicing {
             uptimeSeconds: uptime)
     }
 
-    @MainActor func info() -> OpenClawDeviceInfoPayload {
-        let device = UIDevice.current
+    func info() -> OpenClawDeviceInfoPayload {
+        let device = MainActor.assumeIsolated { UIDevice.current }
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "dev"
         let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
         let locale = Locale.preferredLanguages.first ?? Locale.current.identifier
@@ -39,23 +39,27 @@ final class DeviceStatusService: DeviceStatusServicing {
             locale: locale)
     }
 
-    @MainActor private func batteryStatus() -> OpenClawBatteryStatusPayload {
-        let device = UIDevice.current
-        device.isBatteryMonitoringEnabled = true
-        let level = device.batteryLevel >= 0 ? Double(device.batteryLevel) : nil
-        let state: OpenClawBatteryState = switch device.batteryState {
-        case .charging: .charging
-        case .full: .full
-        case .unplugged: .unplugged
-        case .unknown: .unknown
-        @unknown default: .unknown
+    private func batteryStatus() async -> OpenClawBatteryStatusPayload {
+        await MainActor.run {
+            let device = UIDevice.current
+            device.isBatteryMonitoringEnabled = true
+            let level = device.batteryLevel >= 0 ? Double(device.batteryLevel) : nil
+            let state: OpenClawBatteryState = switch device.batteryState {
+            case .charging: .charging
+            case .full: .full
+            case .unplugged: .unplugged
+            case .unknown: .unknown
+            @unknown default: .unknown
+            }
+            return OpenClawBatteryStatusPayload(
+                level: level,
+                state: state,
+                lowPowerModeEnabled: ProcessInfo.processInfo.isLowPowerModeEnabled)
         }
-        return OpenClawBatteryStatusPayload(
-            level: level,
-            state: state,
-            lowPowerModeEnabled: ProcessInfo.processInfo.isLowPowerModeEnabled)
     }
 
+    private func thermalStatus() -> OpenClawThermalStatusPayload {
+        let state: OpenClawThermalState = switch ProcessInfo.processInfo.thermalState {
     private func thermalStatus() -> OpenClawThermalStatusPayload {
         let state: OpenClawThermalState = switch ProcessInfo.processInfo.thermalState {
         case .nominal: .nominal
